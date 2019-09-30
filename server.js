@@ -6,7 +6,8 @@ const session = require("koa-session");
 const fs  = require("fs");
 
 const config = require("./config");
-const static = require("./router/static"); 
+const static = require("./router/static");
+const db = require("./dao/db.js"); 
 
 const server = new koa();
 server.context.config = config;  //将config对象挂载到ctx原型上
@@ -14,7 +15,10 @@ server.context.config = config;  //将config对象挂载到ctx原型上
 //中间件,betterBody,文件与普通post数据经过koa-better-body处理后都在ctx.request.fields字段上
 server.use(betterBody({
     uploadDir : path.resolve(__dirname,'./static/upload')
-})); 
+}));
+
+// 处理数据库
+server.context.db = db;
 
 // session
 server.keys = fs.readFileSync('.keys').toString().split('\n');
